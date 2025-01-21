@@ -1,11 +1,9 @@
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import StandardScaler
 
 # Import Data
-tap_task_data = pd.read_csv("TAP-Alertness.csv")
-bisbas_data = pd.read_csv("BISBAS.csv")
 cerq_data = pd.read_csv("CERQ.csv")
 cope_data = pd.read_csv("COPE.csv")
 lot_r_data = pd.read_csv("LOT-R.csv")
@@ -13,35 +11,32 @@ PSQ_data = pd.read_csv("PSQ.csv")
 NEO_FFI_data = pd.read_csv("NEO_FFI.csv")
 stai_g_x2_data = pd.read_csv("STAI_G_X2.csv")
 
-# Merged Data 
-data_to_analyze = tap_task_data[["ID", "TAP_A_5", "TAP_A_10"]]
-data_to_analyze[["BAS_Drive", "BAS_Fun", "BAS_Reward", "BIS"]] = bisbas_data[["BAS_Drive", "BAS_Fun", "BAS_Reward", "BIS"]]
-data_to_analyze[["CERQ_SelfBlame", "CERQ_Rumination", "CERQ_Catastrophizing"]] = cerq_data[["CERQ_SelfBlame", "CERQ_Rumination", "CERQ_Catastrophizing"]]
-data_to_analyze[["COPE_SelfBlame", "COPE_SelfDistraction", "COPE_BehavioralDisengagement"]] = cope_data[["COPE_SelfBlame", "COPE_SelfDistraction", "COPE_BehavioralDisengagement"]]
+# Merged Data Accordingly to interested variables
+data_to_analyze = cerq_data[["CERQ_SelfBlame", "CERQ_Rumination", "CERQ_Catastrophizing"]]
+data_to_analyze["COPE_SelfBlame"] = cope_data["COPE_SelfBlame"]
 data_to_analyze[["LOT_Optimism", "LOT_Pessimism"]] = lot_r_data[["LOT_Optimism", "LOT_Pessimism"]]
-data_to_analyze["PSQ_OverallScore"] = PSQ_data["PSQ_OverallScore"]
+data_to_analyze[["PSQ_Worries", "PSQ_Tension"]] = PSQ_data[["PSQ_Worries", "PSQ_Tension"]]
 data_to_analyze["NEOFFI_Neuroticism"] = NEO_FFI_data["NEOFFI_Neuroticism"]
 data_to_analyze["NEOFFI_Extraversion"] = NEO_FFI_data["NEOFFI_Extraversion"]
 data_to_analyze["STAI_Trait_Anxiety"] = stai_g_x2_data["STAI_Trait_Anxiety"]
 
 data_to_analyze.head()
 
-# Clean the data to nromalize: empty strings, convert to numeric 
-data_to_analyze.replace(" ", None, inplace=True) 
-data_to_analyze = data_to_analyze.apply(pd.to_numeric, errors='coerce') 
-data_to_analyze.fillna(data_to_analyze.mean(), inplace=True)  
+# Step 1: Clean the data
+data_to_analyze.replace(" ", None, inplace=True)  # Replace empty strings with None
+data_to_analyze = data_to_analyze.apply(pd.to_numeric, errors='coerce')  # Convert all columns to numeric, set invalid values to NaN  # Fill NaN values with column means
+a = data_to_analyze.loc[:, data_to_analyze.columns != 'ID']
 
 data_to_analyze.head()
 
-# Normalize: exclude ID columns
-scaler = MinMaxScaler()
-normalized_data = data_to_analyze.copy()
-columns_to_normalize = normalized_data.columns.difference(["ID"]) 
-normalized_data[columns_to_normalize] = scaler.fit_transform(normalized_data[columns_to_normalize])
+# Step 2: Normalize the data
+scaler = StandardScaler()
+normalized_data = a.copy()
+scaler.fit(normalized_data)
 
 normalized_data.head()
 
-# Correlation Matrix
+# Step 3: Compute the Correlation Matrix
 correlation_matrix = normalized_data.corr()
 correlation_matrix.head()
 
