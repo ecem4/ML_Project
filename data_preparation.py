@@ -5,6 +5,11 @@
 #Input: Output of function nr 1
 #Output: Checking how strong the correlation between predictors and dependent variable, making boxplots to find and remove outliers, and homogeneity of variance.
 
+#import pandas as pd
+#import seaborn as sns
+#import matplotlib.pyplot as plt
+from scipy.stats import levene
+
 datasets_dict = { 
     'CERQ.csv': ['CERQ_SelfBlame', 'CERQ_Rumination', 'CERQ_Catastrophizing'],
     'COPE.csv': ['COPE_SelfBlame'],
@@ -13,7 +18,26 @@ datasets_dict = {
     'NEO_FFI.csv': ['NEOFFI_Neuroticism', 'NEOFFI_Extraversion'],
     'STAI_G_X2.csv': ['STAI_Trait_Anxiety']
 }
+
 def check_assumptions(datasets_dict):
+#Load the data first
+
+    data = pd.DataFrame()
+    for file, columns in datasets_dict.items():
+        try:
+            temp_data = pd.read_csv(file, usecols=columns)
+            # Converted all columns to numeric, forcing errors to NaN -- pd.to_numeric(): This helped me for all columns are converted to numeric values, and any invalid (non-numeric) data is turned into NaN. Cuz I got errors continuoulsy without turning them - so make sense:)).
+            temp_data = temp_data.apply(pd.to_numeric, errors='coerce')
+            data = pd.concat([data, temp_data], axis=1)
+            print(f"Loaded data from {file}")
+        except FileNotFoundError:
+            print(f"Error: The file {file} was not found.")
+            return None
+
+    if data.empty:
+        print("Error: No data loaded!")
+        return None
+    
 
 #1_Checking Correlation mAtrix
     correlation_matrix = datasets_dict.corr()
@@ -54,3 +78,5 @@ plt.tight_layout()
 plt.show()
 
 #So for those results we need to remove the predictor: COPE_SelfBlame, PSQ_Worries, PSQ_Tension and keeping the rest
+
+
