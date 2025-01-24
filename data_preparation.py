@@ -38,45 +38,92 @@ def check_assumptions(datasets_dict):
         print("Error: No data loaded!")
         return None
     
-
+    data.dropna(inplace=True)
+    
 #1_Checking Correlation mAtrix
-    correlation_matrix = datasets_dict.corr()
-    sufficient_correlations = {}
-    boxplots = {}
-    homogeneity_results = {}
-
-#setting the threshold 0.3
-
+    correlation_matrix = data.corr()
     correlation_threshold = 0.3  
     dependent_variable = ["STAI_Trait_Anxiety"]
 
 #Checking correltions of each predictor with the dependent_variable 
 
+    sufficient_correlations = {}
     for col in correlation_matrix.columns:
         sufficient_correlations[col] = {}
         for dep_var in dependent_variable:
-            if abs(correlation_matrix.loc[col, dep_var]) >= correlation_threshold:
-                sufficient_correlations[col][dep_var] = True
-            else:
-                sufficient_correlations[col][dep_var] = False
+            sufficient_correlations[col][dep_var] = abs(correlation_matrix.loc[col, dep_var]) >= correlation_threshold
 
-print(correlation_matrix)
-print(sufficient_correlations)
+# Tried to remove predictors with insufficient correlation - data.drop
+    predictors_to_remove = [col for col in sufficient_correlations if not sufficient_correlations[col][dependent_variable[0]]]
+    data.drop(columns=predictors_to_remove, inplace=True)
 
-#Visualize to see which predictor to exclude
-plt.figure(figsize=(10, 6))
-correlations_with_anxiety.plot(kind='bar', color='skyblue')
-plt.axhline(0.3, color='green', linestyle='--', label='Threshold (0.3)')
-plt.axhline(-0.3, color='red', linestyle='--', label='Threshold (-0.3)')
-plt.title(f"Correlations with {dependent_variable}", fontsize=14)
-plt.xlabel("Predictors", fontsize=12)
-plt.ylabel("Correlation Coefficient", fontsize=12)
-plt.xticks(rotation=45, ha='right')
-plt.legend()
-plt.grid(axis='y', linestyle='--', alpha=0.7)
-plt.tight_layout()
-plt.show()
+# 2_Boxplots
+    boxplots = {}
+    for col in data.columns:
+        Q1, Q3 = data[col].quantile(0.25), data[col].quantile(0.75)
+        IQR = Q3 - Q1
+        lower_bound, upper_bound = Q1 - 1.5 * IQR, Q3 + 1.5 * IQR
+        data[col] = data[col].clip(lower=lower_bound, upper=upper_bound)
 
-#So for those results we need to remove the predictor: COPE_SelfBlame, PSQ_Worries, PSQ_Tension and keeping the rest
+        # plt
+        fig, ax = plt.subplots()
+        sns.boxplot(x=data[col], ax=ax)
+        ax.set_title(f'Boxplot of {col} (Outliers Clipped)')
+        boxplots[col] = fig
+        plt.close(fig)
+
+# 3_Homogeneity of variance - levene's test - imported relevant library
+    homogeneity_results = {}
+    for col in data.columns:
+        if col != dependent_variable[0]:
+            stat, p_value = levene(data[dependent_variable[0]], data[col])
+            homogeneity_results[col] = {"statistic": stat, "p_value": p_value}
+
+    for col, results in homogeneity_results.items():
+        print(f"{col}: Statistic={results['statistic']:.3f}, p-value={results['p_value']:.3f}")
+        
+#Visualize 
+    correlations_with_anxiety = correlation_matrix[dependent_variable].drop(labels=dependent_variable)
+    
+    plt.figure(figsize=(10, 6))
+    correlations_with_anxiety.plot(kind='bar', color='skyblue')
+    plt.axhline(0.3, color='green', linestyle='--', label='Threshold (0.3)')
+    plt.axhline(-0.3, color='red', linestyle='--', label='Threshold (-0.3)')
+    plt.title(f"Correlations with {dependent_variable}", fontsize=14)
+    plt.xlabel("Predictors", fontsize=12)
+    plt.ylabel("Correlation Coefficient", fontsize=12)
+    plt.xticks(rotation=45, ha='right')
+    plt.legend()
+    plt.grid(axis='y', linestyle='--', alpha=0.7)
+    plt.tight_layout()
+    plt.show()
+
+    return correlation_matrix, sufficient_correlations, boxplots, homogeneity_results
+
+results = check_assumptions(datasets_dict)
+
+#To show a bit more Clear 
+if results:
+    correlation_matrix, sufficient_correlations, boxplots, homogeneity_results = results
+
+    # Correlation_matrix
+    print("\nCorrelation Matrix:")
+    print(correlation_matrix)
+
+    # Sufficient_correlations
+    print("\nSufficient Correlations:")
+    for predictor, correlations in sufficient_correlations.items():
+        print(f"{predictor}: {correlations}")
+
+    # Homogeneity 
+    print("\nHomogeneity of Variance (Levene's Test):")
+    for col, results in homogeneity_results.items():
+        print(f"{col}: Statistic={results['statistic']:.3f}, p-value={results['p_value']:.3f}")
+
+    # Show boxplots
+    for col, boxplot in boxplots.items():
+        boxplot.show()
+
+
 
 
