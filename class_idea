@@ -1,0 +1,16 @@
+class name: DataPreprocessor
+
+def __init__(self, datasets_dict):
+        self.datasets_dict = datasets_dict
+        self.merged_df = pd.DataFrame() #stores merged datasets
+
+methods for: 
+loading and merging datasets
+Checking Datatypes
+encode categorical 
+- One-Hot Encoding, - Label Encoding
+handling missing values
+normalize data (minmax or standard scaler)
+
+all of this at once also 
+
