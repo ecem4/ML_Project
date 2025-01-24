@@ -31,4 +31,18 @@ def check_assumptions(data):
 print(correlation_matrix)
 print(sufficient_correlations)
 
+#Visualize to see which predictor to exclude
+plt.figure(figsize=(10, 6))
+correlations_with_anxiety.plot(kind='bar', color='skyblue')
+plt.axhline(0.3, color='green', linestyle='--', label='Threshold (0.3)')
+plt.axhline(-0.3, color='red', linestyle='--', label='Threshold (-0.3)')
+plt.title(f"Correlations with {dependent_variable}", fontsize=14)
+plt.xlabel("Predictors", fontsize=12)
+plt.ylabel("Correlation Coefficient", fontsize=12)
+plt.xticks(rotation=45, ha='right')
+plt.legend()
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+plt.tight_layout()
+plt.show()
+
 #So for those results we need to remove the predictor: COPE_SelfBlame, PSQ_Worries, PSQ_Tension and keeping the rest
