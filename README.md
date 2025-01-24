@@ -17,14 +17,14 @@ The project is based on the LEMON dataset as presented in the paper:
 * dependent variable: STAI_Trait_Anxiety (Trait anxiety score from the State-Trait Anxiety Inventory).
 
 * predictors:
-* COPE_SelfBlame
-* CERQ_SelfBlame
-* CERQ_Rumination
-* CERQ_Catastrophizing
-* LOT_Optimism
-* LOT_Pessimism
-* PSQ_Worries
-* PSQ_Tension
-* NEOFFI_Neuroticism
-* NEOFFI_Extraversion 
+   - COPE_SelfBlame
+   - CERQ_SelfBlame
+   - CERQ_Rumination
+   - CERQ_Catastrophizing
+   - LOT_Optimism
+   - LOT_Pessimism
+   - PSQ_Worries
+   - PSQ_Tension
+   - NEOFFI_Neuroticism
+   - NEOFFI_Extraversion 
 
