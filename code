@@ -1,5 +1,6 @@
 import pandas as pd
 
+
 tap_task_data = pd.read_csv("TAP-Alertness.csv")
 bisbas_data = pd.read_csv("BISBAS.csv")
 cerq_data = pd.read_csv("CERQ.csv")
@@ -12,18 +13,3 @@ data_to_analyze[["CERQ_SelfBlame", "CERQ_Rumination", "CERQ_Catastrophizing"]] =
 data_to_analyze[["COPE_SelfBlame", "COPE_SelfDistraction", "COPE_BehavioralDisengagement"]] = cope_data[["COPE_SelfBlame", "COPE_SelfDistraction", "COPE_BehavioralDisengagement"]]
 data_to_analyze[["LOT_Optimism", "LOT_Pessimism"]] = lot_r_data[["LOT_Optimism", "LOT_Pessimism"]]
 
-import pandas as pd
-tap_task_data = pd.read_csv("TAP-Alertness.csv")
-data_to_analyze = tap_task_data[["ID", "TAP_A_5", "TAP_A_10"]]
-data_to_analyze
-
-data_to_analyze_copy = data_to_analyze
-
-PSQ_data = pd.read_csv("PSQ.csv")
-NEO_FFI_data = pd.read_csv("NEO_FFI.csv")
-
-data_to_analyze_copy["PSQ_OverallScore"] = PSQ_data["PSQ_OverallScore"]
-data_to_analyze_copy["NEOFFI_Neuroticism"] = NEO_FFI_data["NEOFFI_Neuroticism"]
-data_to_analyze_copy["NEOFFI_Extraversion"] = NEO_FFI_data["NEOFFI_Extraversion"]
-
-data_to_analyze_copy
