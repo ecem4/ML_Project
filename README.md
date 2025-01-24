@@ -14,8 +14,9 @@ The project is based on the LEMON dataset as presented in the paper:
 ## Research question ##
      Can we predict anxiety by examining positive and negative thinking patterns? 
    
-dependent variable: STAI_Trait_Anxiety (Trait anxiety score from the State-Trait Anxiety Inventory).
-predictors:
+*dependent variable: STAI_Trait_Anxiety (Trait anxiety score from the State-Trait Anxiety Inventory).
+
+*predictors:
 * COPE_SelfBlame
 * CERQ_SelfBlame
 * CERQ_Rumination
