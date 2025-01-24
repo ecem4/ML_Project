@@ -1,19 +1,3 @@
-import pandas as pd
-
-
-tap_task_data = pd.read_csv("TAP-Alertness.csv")
-bisbas_data = pd.read_csv("BISBAS.csv")
-cerq_data = pd.read_csv("CERQ.csv")
-cope_data = pd.read_csv("COPE.csv")
-lot_r_data = pd.read_csv("LOT-R.csv")
-
-data_to_analyze = tap_task_data[["ID", "TAP_A_5", "TAP_A_10"]]
-data_to_analyze[["BAS_Drive", "BAS_Fun", "BAS_Reward", "BIS"]] = bisbas_data[["BAS_Drive", "BAS_Fun", "BAS_Reward", "BIS"]]
-data_to_analyze[["CERQ_SelfBlame", "CERQ_Rumination", "CERQ_Catastrophizing"]] = cerq_data[["CERQ_SelfBlame", "CERQ_Rumination", "CERQ_Catastrophizing"]]
-data_to_analyze[["COPE_SelfBlame", "COPE_SelfDistraction", "COPE_BehavioralDisengagement"]] = cope_data[["COPE_SelfBlame", "COPE_SelfDistraction", "COPE_BehavioralDisengagement"]]
-data_to_analyze[["LOT_Optimism", "LOT_Pessimism"]] = lot_r_data[["LOT_Optimism", "LOT_Pessimism"]]
-
-
 '''''Function nr 1 :  Data_preparation
 Input: Dictionary where keys are chosen datasets and values are specific columns
 Output: Dataset with chosen variables form input datasets which are normalized and lack of data are excluded. 
@@ -54,3 +38,4 @@ datasets_dict = { 'CERQ.csv': ['CERQ_SelfBlame', 'CERQ_Rumination', 'CERQ_Catast
 
 data_to_analyze = Data_preparation(datasets_dict)
 print(data_to_analyze)
+
