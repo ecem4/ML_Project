@@ -5,10 +5,18 @@
 #Input: Output of function nr 1
 #Output: Checking how strong the correlation between predictors and dependent variable, making boxplots to find and remove outliers, and homogeneity of variance.
 
-def check_assumptions(data):
+datasets_dict = { 
+    'CERQ.csv': ['CERQ_SelfBlame', 'CERQ_Rumination', 'CERQ_Catastrophizing'],
+    'COPE.csv': ['COPE_SelfBlame'],
+    'LOT-R.csv': ['LOT_Optimism', 'LOT_Pessimism'],
+    'PSQ.csv': ['PSQ_Worries', 'PSQ_Tension'],
+    'NEO_FFI.csv': ['NEOFFI_Neuroticism', 'NEOFFI_Extraversion'],
+    'STAI_G_X2.csv': ['STAI_Trait_Anxiety']
+}
+def check_assumptions(datasets_dict):
 
 #1_Checking Correlation mAtrix
-    correlation_matrix = data.corr()
+    correlation_matrix = datasets_dict.corr()
     sufficient_correlations = {}
     boxplots = {}
     homogeneity_results = {}
@@ -18,7 +26,7 @@ def check_assumptions(data):
     correlation_threshold = 0.3  
     dependent_variable = ["STAI_Trait_Anxiety"]
 
-#Checking correltions of each predicotr with the dependent_variable 
+#Checking correltions of each predictor with the dependent_variable 
 
     for col in correlation_matrix.columns:
         sufficient_correlations[col] = {}
