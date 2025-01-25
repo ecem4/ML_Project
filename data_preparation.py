@@ -70,6 +70,7 @@ def check_assumptions(datasets_dict):
         sns.boxplot(x=data[col], ax=ax)
         ax.set_title(f'Boxplot of {col} (Outliers Clipped)')
         boxplots[col] = fig
+        plt.show()
         plt.close(fig)
 
 # 3_Homogeneity of variance - levene's test - imported relevant library
