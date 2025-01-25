@@ -101,11 +101,11 @@ def check_assumptions(datasets_dict):
 
     return correlation_matrix, sufficient_correlations, boxplots, homogeneity_results
 
-results = check_assumptions(datasets_dict)
-
 #To show a bit more Clear 
+
+results = check_assumptions(data_to_analyze, "STAI_Trait_Anxiety")
+
 if results:
-    correlation_matrix, sufficient_correlations, boxplots, homogeneity_results = results
 
     # Correlation_matrix
     print("\nCorrelation Matrix:")
@@ -121,7 +121,7 @@ if results:
     for col, results in homogeneity_results.items():
         print(f"{col}: Statistic={results['statistic']:.3f}, p-value={results['p_value']:.3f}")
 
-    # Show boxplots
+    # Show boxplots- now working 
     for col, boxplot in boxplots.items():
         boxplot.show()
 
