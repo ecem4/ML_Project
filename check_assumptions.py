@@ -8,42 +8,39 @@
 #import pandas as pd
 #import seaborn as sns
 #import matplotlib.pyplot as plt
-from scipy.stats import levene
 
-datasets_dict = { 
+'''dep_var = 'STAI_Trait_Anxiety'
+
+datasets_dict = { 'CERQ.csv': ['CERQ_SelfBlame', 'CERQ_Rumination', 'CERQ_Catastrophizing'],
+                  'COPE.csv': ['COPE_SelfBlame'],
+                  'LOT-R.csv': ['LOT_Optimism', 'LOT_Pessimism'],
+                  'PSQ.csv': ['PSQ_Worries', 'PSQ_Tension'],
+                  'NEO_FFI.csv': ['NEOFFI_Neuroticism', 'NEOFFI_Extraversion'],
+                  'TICS.csv': ['TICS_ChronicWorrying'],
+                  'TEIQue-SF.csv': ['TeiQueSF_well_being'],
+                  'STAI_G_X2.csv': ['STAI_Trait_Anxiety']}
+
+data_after_preparation = Data_preparation(datasets_dict)'''
+
+'''datasets_dict = { 
     'CERQ.csv': ['CERQ_SelfBlame', 'CERQ_Rumination', 'CERQ_Catastrophizing'],
     'COPE.csv': ['COPE_SelfBlame'],
     'LOT-R.csv': ['LOT_Optimism', 'LOT_Pessimism'],
     'PSQ.csv': ['PSQ_Worries', 'PSQ_Tension'],
     'NEO_FFI.csv': ['NEOFFI_Neuroticism', 'NEOFFI_Extraversion'],
     'STAI_G_X2.csv': ['STAI_Trait_Anxiety']
-}
+}'''
+#Needed library for homogeneity of variance check imported
+from scipy.stats import levene
 
-def check_assumptions(datasets_dict):
-#Load the data first
-
-    data = pd.DataFrame()
-    for file, columns in datasets_dict.items():
-        try:
-            temp_data = pd.read_csv(file, usecols=columns)
-            # Converted all columns to numeric, forcing errors to NaN -- pd.to_numeric(): This helped me for all columns are converted to numeric values, and any invalid (non-numeric) data is turned into NaN. Cuz I got errors continuoulsy without turning them - so make sense:)).
-            temp_data = temp_data.apply(pd.to_numeric, errors='coerce')
-            data = pd.concat([data, temp_data], axis=1)
-            print(f"Loaded data from {file}")
-        except FileNotFoundError:
-            print(f"Error: The file {file} was not found.")
-            return None
-
-    if data.empty:
-        print("Error: No data loaded!")
-        return None
-    
-    data.dropna(inplace=True)
+def check_assumptions(datasets_dict, y):
+#Load the data first - remove the detailed code - no need 
+    data = datasets_dict 
     
 #1_Checking Correlation mAtrix
     correlation_matrix = data.corr()
     correlation_threshold = 0.3  
-    dependent_variable = ["STAI_Trait_Anxiety"]
+    dependent_variable = [y]
 
 #Checking correltions of each predictor with the dependent_variable 
 
@@ -64,28 +61,25 @@ def check_assumptions(datasets_dict):
         IQR = Q3 - Q1
         lower_bound, upper_bound = Q1 - 1.5 * IQR, Q3 + 1.5 * IQR
         data[col] = data[col].clip(lower=lower_bound, upper=upper_bound)
-
-        # plt
-        fig, ax = plt.subplots()
-        sns.boxplot(x=data[col], ax=ax)
-        ax.set_title(f'Boxplot of {col} (Outliers Clipped)')
-        boxplots[col] = fig
-        plt.show()
-        plt.close(fig)
-
-# 3_Homogeneity of variance - levene's test - imported relevant library
-    homogeneity_results = {}
+        
+# 3_Homogeneity of variance - Levene's test - imported relevant library
+    homogeneity_results = {"variable": [],
+                           "F value": [],
+                           "p_value": []}
     for col in data.columns:
         if col != dependent_variable[0]:
             stat, p_value = levene(data[dependent_variable[0]], data[col])
-            homogeneity_results[col] = {"statistic": stat, "p_value": p_value}
+            homogeneity_results["variable"].append(col)
+            homogeneity_results["F value"].append(stat)
+            homogeneity_results["p_value"].append(p_value)
+            
+    homogeneity_results = pd.DataFrame(homogeneity_results)
 
-    for col, results in homogeneity_results.items():
-        print(f"{col}: Statistic={results['statistic']:.3f}, p-value={results['p_value']:.3f}")
+    correlation_matrix_after_excluding_variables = data.corr()
         
 #Visualize 
     correlations_with_anxiety = correlation_matrix[dependent_variable].drop(labels=dependent_variable)
-    
+
     plt.figure(figsize=(10, 6))
     correlations_with_anxiety.plot(kind='bar', color='skyblue')
     plt.axhline(0.3, color='green', linestyle='--', label='Threshold (0.3)')
@@ -101,7 +95,7 @@ def check_assumptions(datasets_dict):
 
     return correlation_matrix, sufficient_correlations, boxplots, homogeneity_results
 
-#To show a bit more Clear 
+#To show a bit more Clear (optional) 
 
 results = check_assumptions(data_to_analyze, "STAI_Trait_Anxiety")
 
