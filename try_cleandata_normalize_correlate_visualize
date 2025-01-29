@@ -1,4 +1,4 @@
-import pandas as pd
+'''import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
@@ -44,4 +44,4 @@ correlation_matrix.head()
 plt.figure(figsize=(12, 10))
 sns.heatmap(correlation_matrix, annot=True, fmt=".2f", cmap="coolwarm", square=True, cbar=True)
 plt.title("Correlation Matrix Heatmap")
-plt.show()
+plt.show()'''
