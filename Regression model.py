@@ -1,3 +1,16 @@
+import pandas as pd
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import Lasso
+from sklearn.metrics import mean_squared_error, r2_score, accuracy_score
+import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy.stats import levene
+import numpy as np
+from sklearn import metrics
+from sklearn.model_selection import learning_curve
+
 '''''Function nr 1 :  Data_preparation
 Input: Dictionary where keys are chosen datasets and values are specific columns
 Output: Dataset with chosen variables form input datasets which are normalized and lack of data are excluded. 
@@ -38,4 +51,19 @@ datasets_dict = { 'CERQ.csv': ['CERQ_SelfBlame', 'CERQ_Rumination', 'CERQ_Catast
 
 data_to_analyze = Data_preparation(datasets_dict)
 print(data_to_analyze)
+
+dep_var = 'STAI_Trait_Anxiety'
+
+datasets_dict = { 'CERQ.csv': ['CERQ_SelfBlame', 'CERQ_Rumination', 'CERQ_Catastrophizing'],
+                  'COPE.csv': ['COPE_SelfBlame'],
+                  'LOT-R.csv': ['LOT_Optimism', 'LOT_Pessimism'],
+                  'PSQ.csv': ['PSQ_Worries', 'PSQ_Tension'],
+                  'NEO_FFI.csv': ['NEOFFI_Neuroticism', 'NEOFFI_Extraversion'],
+                  'TICS.csv': ['TICS_ChronicWorrying'],
+                  'TEIQue-SF.csv': ['TeiQueSF_well_being'],
+                  'STAI_G_X2.csv': ['STAI_Trait_Anxiety']}
+
+data_after_preparation = Data_preparation(datasets_dict)
+
+data_after_preparation
 
