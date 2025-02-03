@@ -1,4 +1,16 @@
 #First model
+dep_var = 'STAI_Trait_Anxiety'
+
+datasets_dict = { 'CERQ.csv': ['CERQ_SelfBlame', 'CERQ_Rumination', 'CERQ_Catastrophizing'],
+                  'COPE.csv': ['COPE_SelfBlame'],
+                  'LOT-R.csv': ['LOT_Optimism', 'LOT_Pessimism'],
+                  'PSQ.csv': ['PSQ_Worries', 'PSQ_Tension'],
+                  'NEO_FFI.csv': ['NEOFFI_Neuroticism', 'NEOFFI_Extraversion'],
+                  'TICS.csv': ['TICS_ChronicWorrying'],
+                  'TEIQue-SF.csv': ['TeiQueSF_well_being'],
+                  'STAI_G_X2.csv': ['STAI_Trait_Anxiety']}
+
+data_after_preparation = Data_preparation(datasets_dict)
 
 X = data_after_preparation.drop(dep_var, axis=1)
 y = data_after_preparation[dep_var]
@@ -43,6 +55,7 @@ plt.grid(True)
 plt.show()
 
 #Second model
+data_after_checking_assumptions = check_assumptions(data_after_preparation, dep_var)
 
 X = data_after_checking_assumptions[0].drop(dep_var, axis=1)
 y = data_after_checking_assumptions[0][dep_var]
